@@ -8,7 +8,8 @@
     "scheme": "bitmuscles",
     "userInterfaceStyle": "automatic",
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.anonymous.bitmuscles"
     },
     "android": {
       "adaptiveIcon": {
@@ -31,10 +32,11 @@
         {
           "image": "./assets/images/splash-icon.png",
           "resizeMode": "contain",
-          "backgroundColor": "#ffffff"
+          "backgroundColor": "#000000"
         }
       ],
-      "expo-sqlite"
+      "expo-sqlite",
+      "./plugins/withDisableScriptSandboxing.js"
     ],
     "experiments": {
       "typedRoutes": true
