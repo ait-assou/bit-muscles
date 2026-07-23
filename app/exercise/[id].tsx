@@ -1,3 +1,4 @@
+import { LinearGradient } from 'expo-linear-gradient';
 import React, { useMemo,  useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, ActivityIndicator, TouchableOpacity } from 'react-native';
 import { useLocalSearchParams, useRouter, Stack } from 'expo-router';
@@ -40,6 +41,7 @@ export default function ExerciseDetailsScreen() {
   if (loading) {
     return (
       <View style={styles.centerContainer}>
+        <LinearGradient colors={theme.colors.gradient} style={StyleSheet.absoluteFillObject} />
         <Stack.Screen options={{ title: 'Loading...' }} />
         <ActivityIndicator size="large" color={theme.colors.primary} />
       </View>
@@ -49,6 +51,7 @@ export default function ExerciseDetailsScreen() {
   if (error || !exercise) {
     return (
       <View style={styles.centerContainer}>
+        <LinearGradient colors={theme.colors.gradient} style={StyleSheet.absoluteFillObject} />
         <Stack.Screen options={{ title: 'Error' }} />
         <Text style={styles.errorText}>{error || 'Exercise not found.'}</Text>
         <TouchableOpacity style={styles.retryButton} onPress={fetchExercise}>
@@ -61,6 +64,7 @@ export default function ExerciseDetailsScreen() {
 
   return (
     <View style={styles.container}>
+      <LinearGradient colors={theme.colors.gradient} style={StyleSheet.absoluteFillObject} />
       <Stack.Screen 
         options={{ 
           title: exercise.name,
@@ -143,11 +147,11 @@ export default function ExerciseDetailsScreen() {
 const useStyles = (theme: ReturnType<typeof useTheme>) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: theme.colors.background,
+    backgroundColor: 'transparent',
   },
   centerContainer: {
     flex: 1,
-    backgroundColor: theme.colors.background,
+    backgroundColor: 'transparent',
     justifyContent: 'center',
     alignItems: 'center',
     padding: theme.spacing.xl,

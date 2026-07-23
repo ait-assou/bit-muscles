@@ -1,3 +1,4 @@
+import { LinearGradient } from 'expo-linear-gradient';
 import React, { useMemo } from 'react';
 import { StyleSheet, View, Text, ScrollView, TouchableOpacity, Switch } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -139,6 +140,7 @@ export default function ProfileScreen() {
 
   return (
     <SafeAreaView style={styles.safeArea}>
+      <LinearGradient colors={theme.colors.gradient} style={StyleSheet.absoluteFillObject} />
       <ScrollView style={styles.container} contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
         <Text style={styles.screenTitle}>Profile</Text>
         
@@ -161,7 +163,7 @@ export default function ProfileScreen() {
 const useStyles = (theme: ReturnType<typeof useTheme>) => StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: theme.colors.background,
+    backgroundColor: 'transparent',
   },
   container: {
     flex: 1,
@@ -286,7 +288,7 @@ const useStyles = (theme: ReturnType<typeof useTheme>) => StyleSheet.create({
     width: 32,
     height: 32,
     borderRadius: 8,
-    backgroundColor: theme.colors.background,
+    backgroundColor: 'transparent',
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: theme.spacing.md,

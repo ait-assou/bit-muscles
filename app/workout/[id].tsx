@@ -1,3 +1,4 @@
+import { LinearGradient } from 'expo-linear-gradient';
 import React, { useEffect, useState, useMemo } from 'react';
 import { StyleSheet, View, Text, FlatList, ActivityIndicator, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -70,6 +71,7 @@ export default function WorkoutDetailScreen() {
 
   return (
     <SafeAreaView style={styles.safeArea}>
+      <LinearGradient colors={theme.colors.gradient} style={StyleSheet.absoluteFillObject} />
       <Stack.Screen options={{ headerShown: false }} />
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
@@ -105,7 +107,7 @@ export default function WorkoutDetailScreen() {
 const useStyles = (theme: ReturnType<typeof useTheme>) => StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: theme.colors.background,
+    backgroundColor: 'transparent',
   },
   header: {
     flexDirection: 'row',

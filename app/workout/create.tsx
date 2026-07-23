@@ -1,3 +1,4 @@
+import { LinearGradient } from 'expo-linear-gradient';
 import React, { useMemo,  useState, useEffect } from 'react';
 import { 
   StyleSheet, 
@@ -85,6 +86,7 @@ export default function CreateWorkoutScreen() {
 
   return (
     <SafeAreaView style={styles.safeArea}>
+      <LinearGradient colors={theme.colors.gradient} style={StyleSheet.absoluteFillObject} />
       <Stack.Screen options={{ headerShown: false }} />
       <KeyboardAvoidingView 
         style={styles.container} 
@@ -222,7 +224,7 @@ export default function CreateWorkoutScreen() {
 const useStyles = (theme: ReturnType<typeof useTheme>) => StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: theme.colors.background,
+    backgroundColor: 'transparent',
   },
   container: {
     flex: 1,
@@ -337,7 +339,7 @@ const useStyles = (theme: ReturnType<typeof useTheme>) => StyleSheet.create({
   // Modal Styles
   modalContainer: {
     flex: 1,
-    backgroundColor: theme.colors.background,
+    backgroundColor: 'transparent',
   },
   modalHeader: {
     flexDirection: 'row',

@@ -1,3 +1,4 @@
+import { LinearGradient } from 'expo-linear-gradient';
 import React, { useMemo } from 'react';
 import { StyleSheet, View, Text, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -176,6 +177,7 @@ export default function ProgressScreen() {
 
   return (
     <SafeAreaView style={styles.safeArea}>
+      <LinearGradient colors={theme.colors.gradient} style={StyleSheet.absoluteFillObject} />
       <ScrollView style={styles.container} contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
         <View style={styles.header}>
           <Text style={styles.title}>Progress</Text>
@@ -194,7 +196,7 @@ export default function ProgressScreen() {
 const useStyles = (theme: ReturnType<typeof useTheme>) => StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: theme.colors.background,
+    backgroundColor: 'transparent',
   },
   container: {
     flex: 1,
@@ -319,7 +321,7 @@ const useStyles = (theme: ReturnType<typeof useTheme>) => StyleSheet.create({
     width: 48,
     height: 48,
     borderRadius: 24,
-    backgroundColor: theme.colors.background,
+    backgroundColor: 'transparent',
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: theme.spacing.md,

@@ -1,3 +1,4 @@
+import { LinearGradient } from 'expo-linear-gradient';
 import React, { useMemo,  useEffect, useState, useCallback } from 'react';
 import { StyleSheet, View, FlatList, Text, ActivityIndicator, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -107,6 +108,7 @@ export default function HomeScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
+      <LinearGradient colors={theme.colors.gradient} style={StyleSheet.absoluteFillObject} />
       <FlatList
         data={exercises}
         keyExtractor={(item) => item.id}
@@ -128,7 +130,7 @@ export default function HomeScreen() {
 const useStyles = (theme: ReturnType<typeof useTheme>) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: theme.colors.background,
+    backgroundColor: 'transparent',
   },
   listContent: {
     paddingHorizontal: theme.spacing.md,

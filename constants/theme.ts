@@ -6,23 +6,25 @@ const darkColors = {
   card: '#1C1C1E',
   primary: '#4ADE80',
   text: '#FFFFFF',
-  textSecondary: '#8E8E93',
+  textSecondary: '#D1D1D6', // Much lighter gray for excellent contrast in dark mode
   border: '#2C2C2E',
   muscleDefault: '#333333',
   surface: '#121212',
   error: '#FF453A',
+  gradient: ['#1C1C1E', '#000000'] as readonly [string, string, ...string[]],
 };
 
 const lightColors = {
   background: '#F2F2F7',
   card: '#FFFFFF',
-  primary: '#34C759', // Slightly darker green for light mode contrast
+  primary: '#2E8B57', // Sea green for better contrast in light mode
   text: '#000000',
-  textSecondary: '#8E8E93',
+  textSecondary: '#3C3C43', // Darker gray for iOS light mode
   border: '#E5E5EA',
   muscleDefault: '#D1D1D6',
   surface: '#FFFFFF',
   error: '#FF3B30',
+  gradient: ['#E8F5E9', '#F2F2F7'] as readonly [string, string, ...string[]],
 };
 
 export const THEME = {

@@ -1,3 +1,4 @@
+import { LinearGradient } from 'expo-linear-gradient';
 import React, { useMemo,  useState, useEffect } from 'react';
 import { StyleSheet, View, FlatList, TextInput, ActivityIndicator, Text } from 'react-native';
 import { useRouter } from 'expo-router';
@@ -80,7 +81,7 @@ export default function ExercisesScreen() {
 const useStyles = (theme: ReturnType<typeof useTheme>) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: theme.colors.background,
+    backgroundColor: 'transparent',
   },
   searchContainer: {
     flexDirection: 'row',
