@@ -22,7 +22,7 @@ export const BackBody: React.FC<BackBodyProps> = ({ width = '100%', height = '10
   };
 
   return (
-    <Svg width={width} height={height} viewBox="0 0 300 600">
+    <Svg width={width} height={height} viewBox="0 0 300 520">
       {/* Head */}
       <Path
         d="M130 20 C130 0, 170 0, 170 20 L170 60 C170 80, 130 80, 130 60 Z"

@@ -34,7 +34,7 @@ export const MuscleBody = () => {
           </Text>
         </TouchableOpacity>
       </View>
-      <View style={[styles.bodyContainer, { maxHeight: screenHeight * 0.65 }]}>
+      <View style={[styles.bodyContainer, { maxHeight: screenHeight * 0.60 }]}>
         {bodyView === 'front' ? <FrontBody /> : <BackBody />}
       </View>
     </View>
@@ -46,7 +46,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     paddingTop: THEME.spacing.xs,
-    paddingHorizontal: THEME.spacing.md,
   },
   toggleContainer: {
     flexDirection: 'row',
@@ -73,7 +72,7 @@ const styles = StyleSheet.create({
   },
   bodyContainer: {
     width: '100%',
-    aspectRatio: 300 / 600,
+    aspectRatio: 300 / 520,
     justifyContent: 'center',
     alignItems: 'center',
   },
