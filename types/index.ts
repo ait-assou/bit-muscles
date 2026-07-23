@@ -60,3 +60,10 @@ export interface WgerResponse<T> {
   previous: string | null;
   results: T[];
 }
+
+export interface CustomWorkout {
+  id: string;
+  name: string;
+  exercises: Exercise[];
+  createdAt: number;
+}

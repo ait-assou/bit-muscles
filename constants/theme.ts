@@ -7,6 +7,8 @@ export const THEME = {
     textSecondary: '#8E8E93',
     border: '#2C2C2E',
     muscleDefault: '#333333',
+    surface: '#121212',
+    error: '#FF453A',
   },
   spacing: {
     xs: 4,
