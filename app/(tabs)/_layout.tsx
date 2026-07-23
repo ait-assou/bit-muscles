@@ -1,26 +1,29 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Tabs } from 'expo-router';
 import { Home, Dumbbell, Calendar, LineChart, User } from 'lucide-react-native';
-import { THEME } from '../../constants/theme';
+import { useTheme } from '../../constants/theme';
 import { useColorScheme } from '@/components/useColorScheme';
 
 export default function TabLayout() {
+  const theme = useTheme();
+
+
   const colorScheme = useColorScheme();
 
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: THEME.colors.primary,
-        tabBarInactiveTintColor: THEME.colors.textSecondary,
+        tabBarActiveTintColor: theme.colors.primary,
+        tabBarInactiveTintColor: theme.colors.textSecondary,
         tabBarStyle: {
-          backgroundColor: THEME.colors.background,
-          borderTopColor: THEME.colors.border,
+          backgroundColor: theme.colors.background,
+          borderTopColor: theme.colors.border,
         },
         headerStyle: {
-          backgroundColor: THEME.colors.background,
+          backgroundColor: theme.colors.background,
         },
         headerTitleStyle: {
-          color: THEME.colors.text,
+          color: theme.colors.text,
           fontWeight: 'bold',
         },
       }}>

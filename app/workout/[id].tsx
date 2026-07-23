@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { StyleSheet, View, Text, FlatList, ActivityIndicator, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams, useRouter, Stack } from 'expo-router';
 import { ChevronLeft, Dumbbell } from 'lucide-react-native';
-import { THEME } from '../../constants/theme';
+import { useTheme } from '../../constants/theme';
 import { Exercise } from '../../types';
 import { useWorkoutStore } from '../../store/useWorkoutStore';
 import { wgerApi } from '../../services/wgerApi';
@@ -13,6 +13,8 @@ export default function WorkoutDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
   const { workouts } = useWorkoutStore();
+  const theme = useTheme();
+  const styles = useMemo(() => useStyles(theme), [theme]);
 
   const [workoutName, setWorkoutName] = useState('Workout');
   const [exercises, setExercises] = useState<Exercise[]>([]);
@@ -71,7 +73,7 @@ export default function WorkoutDetailScreen() {
       <Stack.Screen options={{ headerShown: false }} />
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-          <ChevronLeft size={24} color={THEME.colors.text} />
+          <ChevronLeft size={24} color={theme.colors.text} />
         </TouchableOpacity>
         <Text style={styles.title} numberOfLines={1}>{workoutName}</Text>
         <View style={{ width: 24 }} />
@@ -79,11 +81,11 @@ export default function WorkoutDetailScreen() {
 
       {loading ? (
         <View style={styles.centerContainer}>
-          <ActivityIndicator size="large" color={THEME.colors.primary} />
+          <ActivityIndicator size="large" color={theme.colors.primary} />
         </View>
       ) : exercises.length === 0 ? (
         <View style={styles.centerContainer}>
-          <Dumbbell size={48} color={THEME.colors.border} style={{ marginBottom: 16 }} />
+          <Dumbbell size={48} color={theme.colors.border} style={{ marginBottom: 16 }} />
           <Text style={styles.emptyText}>No exercises found.</Text>
         </View>
       ) : (
@@ -100,18 +102,18 @@ export default function WorkoutDetailScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = (theme: ReturnType<typeof useTheme>) => StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: THEME.colors.background,
+    backgroundColor: theme.colors.background,
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    padding: THEME.spacing.md,
+    padding: theme.spacing.md,
     borderBottomWidth: 1,
-    borderBottomColor: THEME.colors.border,
+    borderBottomColor: theme.colors.border,
   },
   backButton: {
     padding: 4,
@@ -119,13 +121,13 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     fontWeight: '700',
-    color: THEME.colors.text,
+    color: theme.colors.text,
     flex: 1,
     textAlign: 'center',
   },
   listContent: {
-    padding: THEME.spacing.md,
-    gap: THEME.spacing.md,
+    padding: theme.spacing.md,
+    gap: theme.spacing.md,
   },
   centerContainer: {
     flex: 1,
@@ -133,7 +135,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   emptyText: {
-    color: THEME.colors.textSecondary,
+    color: theme.colors.textSecondary,
     fontSize: 16,
   },
 });

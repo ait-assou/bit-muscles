@@ -1,13 +1,16 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { Difficulty } from '../types';
-import { THEME } from '../constants/theme';
+import { useTheme } from '../constants/theme';
 
 interface DifficultyBadgeProps {
   difficulty: Difficulty;
 }
 
 export const DifficultyBadge: React.FC<DifficultyBadgeProps> = ({ difficulty }) => {
+  const theme = useTheme();
+  const styles = useMemo(() => useStyles(theme), [theme]);
+
   const getStyle = () => {
     switch (difficulty) {
       case 'Beginner':
@@ -17,7 +20,7 @@ export const DifficultyBadge: React.FC<DifficultyBadgeProps> = ({ difficulty }) 
       case 'Advanced':
         return { bg: '#ef444420', color: '#ef4444' };
       default:
-        return { bg: THEME.colors.border, color: THEME.colors.textSecondary };
+        return { bg: theme.colors.border, color: theme.colors.textSecondary };
     }
   };
 
@@ -30,11 +33,11 @@ export const DifficultyBadge: React.FC<DifficultyBadgeProps> = ({ difficulty }) 
   );
 };
 
-const styles = StyleSheet.create({
+const useStyles = (theme: ReturnType<typeof useTheme>) => StyleSheet.create({
   container: {
     paddingVertical: 4,
     paddingHorizontal: 8,
-    borderRadius: THEME.borderRadius.round,
+    borderRadius: theme.borderRadius.round,
   },
   text: {
     fontSize: 10,

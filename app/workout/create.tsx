@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useMemo,  useState, useEffect } from 'react';
 import { 
   StyleSheet, 
   View, 
@@ -14,12 +14,15 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter, Stack } from 'expo-router';
 import { ChevronLeft, Plus, Search, X, Dumbbell } from 'lucide-react-native';
-import { THEME } from '../../constants/theme';
+import { useTheme } from '../../constants/theme';
 import { Exercise, CustomWorkout } from '../../types';
 import { useWorkoutStore } from '../../store/useWorkoutStore';
 import { wgerApi } from '../../services/wgerApi';
 
 export default function CreateWorkoutScreen() {
+  const theme = useTheme();
+  const styles = useMemo(() => useStyles(theme), [theme]);
+
   const router = useRouter();
   const { addWorkout } = useWorkoutStore();
   
@@ -90,7 +93,7 @@ export default function CreateWorkoutScreen() {
         {/* Header */}
         <View style={styles.header}>
           <TouchableOpacity onPress={() => router.back()} style={styles.iconButton}>
-            <ChevronLeft size={24} color={THEME.colors.text} />
+            <ChevronLeft size={24} color={theme.colors.text} />
           </TouchableOpacity>
           <Text style={styles.title}>New Workout</Text>
           <TouchableOpacity 
@@ -111,7 +114,7 @@ export default function CreateWorkoutScreen() {
           <TextInput
             style={styles.input}
             placeholder="e.g., Ultimate Chest Day"
-            placeholderTextColor={THEME.colors.textSecondary}
+            placeholderTextColor={theme.colors.textSecondary}
             value={workoutName}
             onChangeText={setWorkoutName}
           />
@@ -124,7 +127,7 @@ export default function CreateWorkoutScreen() {
             style={styles.addButton}
             onPress={() => setSearchModalVisible(true)}
           >
-            <Plus size={16} color={THEME.colors.primary} />
+            <Plus size={16} color={theme.colors.primary} />
             <Text style={styles.addText}>Add Exercise</Text>
           </TouchableOpacity>
         </View>
@@ -136,17 +139,17 @@ export default function CreateWorkoutScreen() {
           renderItem={({ item }) => (
             <View style={styles.exerciseCard}>
               <View style={styles.exerciseInfo}>
-                <Dumbbell size={20} color={THEME.colors.primary} />
+                <Dumbbell size={20} color={theme.colors.primary} />
                 <Text style={styles.exerciseName} numberOfLines={1}>{item.name}</Text>
               </View>
               <TouchableOpacity onPress={() => removeExercise(item.id)} style={styles.removeButton}>
-                <X size={18} color={THEME.colors.error} />
+                <X size={18} color={theme.colors.error} />
               </TouchableOpacity>
             </View>
           )}
           ListEmptyComponent={
             <View style={styles.emptyState}>
-              <Dumbbell size={40} color={THEME.colors.textSecondary} style={{ marginBottom: 16 }} />
+              <Dumbbell size={40} color={theme.colors.textSecondary} style={{ marginBottom: 16 }} />
               <Text style={styles.emptyText}>No exercises added yet.</Text>
               <Text style={styles.emptySubText}>Tap "Add Exercise" to start building your workout.</Text>
             </View>
@@ -170,24 +173,24 @@ export default function CreateWorkoutScreen() {
           </View>
           
           <View style={styles.searchBar}>
-            <Search size={20} color={THEME.colors.textSecondary} />
+            <Search size={20} color={theme.colors.textSecondary} />
             <TextInput
               style={styles.searchInput}
               placeholder="Search exercises..."
-              placeholderTextColor={THEME.colors.textSecondary}
+              placeholderTextColor={theme.colors.textSecondary}
               value={searchQuery}
               onChangeText={setSearchQuery}
               autoFocus
             />
             {searchQuery.length > 0 && (
               <TouchableOpacity onPress={() => setSearchQuery('')}>
-                <X size={20} color={THEME.colors.textSecondary} />
+                <X size={20} color={theme.colors.textSecondary} />
               </TouchableOpacity>
             )}
           </View>
 
           {isSearching ? (
-            <ActivityIndicator style={styles.loader} color={THEME.colors.primary} />
+            <ActivityIndicator style={styles.loader} color={theme.colors.primary} />
           ) : (
             <FlatList
               data={searchResults}
@@ -200,7 +203,7 @@ export default function CreateWorkoutScreen() {
                   onPress={() => addExercise(item)}
                 >
                   <Text style={styles.searchResultName}>{item.name}</Text>
-                  <Plus size={20} color={THEME.colors.primary} />
+                  <Plus size={20} color={theme.colors.primary} />
                 </TouchableOpacity>
               )}
               ListEmptyComponent={
@@ -216,10 +219,10 @@ export default function CreateWorkoutScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = (theme: ReturnType<typeof useTheme>) => StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: THEME.colors.background,
+    backgroundColor: theme.colors.background,
   },
   container: {
     flex: 1,
@@ -228,9 +231,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: THEME.spacing.md,
+    padding: theme.spacing.md,
     borderBottomWidth: 1,
-    borderBottomColor: THEME.colors.border,
+    borderBottomColor: theme.colors.border,
   },
   iconButton: {
     padding: 4,
@@ -238,45 +241,45 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 18,
     fontWeight: '700',
-    color: THEME.colors.text,
+    color: theme.colors.text,
   },
   saveButton: {
     paddingHorizontal: 12,
     paddingVertical: 6,
   },
   saveText: {
-    color: THEME.colors.primary,
+    color: theme.colors.primary,
     fontWeight: '700',
     fontSize: 16,
   },
   saveTextDisabled: {
-    color: THEME.colors.textSecondary,
+    color: theme.colors.textSecondary,
     opacity: 0.5,
   },
   inputContainer: {
-    padding: THEME.spacing.md,
+    padding: theme.spacing.md,
   },
   label: {
     fontSize: 16,
     fontWeight: '600',
-    color: THEME.colors.text,
-    marginBottom: THEME.spacing.sm,
+    color: theme.colors.text,
+    marginBottom: theme.spacing.sm,
   },
   input: {
-    backgroundColor: THEME.colors.surface,
-    color: THEME.colors.text,
+    backgroundColor: theme.colors.surface,
+    color: theme.colors.text,
     fontSize: 16,
-    padding: THEME.spacing.md,
-    borderRadius: THEME.borderRadius.md,
+    padding: theme.spacing.md,
+    borderRadius: theme.borderRadius.md,
     borderWidth: 1,
-    borderColor: THEME.colors.border,
+    borderColor: theme.colors.border,
   },
   exercisesHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: THEME.spacing.md,
-    marginTop: THEME.spacing.md,
+    paddingHorizontal: theme.spacing.md,
+    marginTop: theme.spacing.md,
   },
   addButton: {
     flexDirection: 'row',
@@ -284,20 +287,20 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   addText: {
-    color: THEME.colors.primary,
+    color: theme.colors.primary,
     fontWeight: '600',
   },
   listContent: {
-    padding: THEME.spacing.md,
+    padding: theme.spacing.md,
   },
   exerciseCard: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: THEME.colors.surface,
-    padding: THEME.spacing.md,
-    borderRadius: THEME.borderRadius.md,
-    marginBottom: THEME.spacing.sm,
+    backgroundColor: theme.colors.surface,
+    padding: theme.spacing.md,
+    borderRadius: theme.borderRadius.md,
+    marginBottom: theme.spacing.sm,
   },
   exerciseInfo: {
     flexDirection: 'row',
@@ -306,7 +309,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   exerciseName: {
-    color: THEME.colors.text,
+    color: theme.colors.text,
     fontSize: 16,
     fontWeight: '500',
     flex: 1,
@@ -317,70 +320,70 @@ const styles = StyleSheet.create({
   emptyState: {
     alignItems: 'center',
     justifyContent: 'center',
-    padding: THEME.spacing.xl,
+    padding: theme.spacing.xl,
     marginTop: 40,
   },
   emptyText: {
-    color: THEME.colors.text,
+    color: theme.colors.text,
     fontSize: 18,
     fontWeight: '600',
     marginBottom: 8,
   },
   emptySubText: {
-    color: THEME.colors.textSecondary,
+    color: theme.colors.textSecondary,
     textAlign: 'center',
   },
   
   // Modal Styles
   modalContainer: {
     flex: 1,
-    backgroundColor: THEME.colors.background,
+    backgroundColor: theme.colors.background,
   },
   modalHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: THEME.spacing.md,
+    padding: theme.spacing.md,
     borderBottomWidth: 1,
-    borderBottomColor: THEME.colors.border,
+    borderBottomColor: theme.colors.border,
   },
   modalTitle: {
     fontSize: 18,
     fontWeight: '700',
-    color: THEME.colors.text,
+    color: theme.colors.text,
   },
   modalCancel: {
-    color: THEME.colors.primary,
+    color: theme.colors.primary,
     fontSize: 16,
   },
   searchBar: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: THEME.colors.surface,
-    margin: THEME.spacing.md,
-    paddingHorizontal: THEME.spacing.md,
-    borderRadius: THEME.borderRadius.md,
+    backgroundColor: theme.colors.surface,
+    margin: theme.spacing.md,
+    paddingHorizontal: theme.spacing.md,
+    borderRadius: theme.borderRadius.md,
     height: 44,
   },
   searchInput: {
     flex: 1,
-    color: THEME.colors.text,
+    color: theme.colors.text,
     marginLeft: 8,
     fontSize: 16,
   },
   searchList: {
-    paddingHorizontal: THEME.spacing.md,
+    paddingHorizontal: theme.spacing.md,
   },
   searchResultItem: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingVertical: THEME.spacing.md,
+    paddingVertical: theme.spacing.md,
     borderBottomWidth: 1,
-    borderBottomColor: THEME.colors.border,
+    borderBottomColor: theme.colors.border,
   },
   searchResultName: {
-    color: THEME.colors.text,
+    color: theme.colors.text,
     fontSize: 16,
     flex: 1,
   },
@@ -388,7 +391,7 @@ const styles = StyleSheet.create({
     marginTop: 40,
   },
   noResultsText: {
-    color: THEME.colors.textSecondary,
+    color: theme.colors.textSecondary,
     textAlign: 'center',
     marginTop: 40,
     fontSize: 16,

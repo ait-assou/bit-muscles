@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { THEME } from '../constants/theme';
+import { useTheme } from '../constants/theme';
 interface MuscleChipProps {
   muscleId: string;
   type: 'primary' | 'secondary';
@@ -8,6 +8,8 @@ interface MuscleChipProps {
 
 export const MuscleChip: React.FC<MuscleChipProps> = ({ muscleId, type }) => {
   const name = muscleId;
+  const theme = useTheme();
+  const styles = useMemo(() => useStyles(theme), [theme]);
 
   return (
     <View style={[styles.container, type === 'primary' ? styles.primary : styles.secondary]}>
@@ -18,28 +20,28 @@ export const MuscleChip: React.FC<MuscleChipProps> = ({ muscleId, type }) => {
   );
 };
 
-const styles = StyleSheet.create({
+const useStyles = (theme: ReturnType<typeof useTheme>) => StyleSheet.create({
   container: {
     paddingVertical: 4,
     paddingHorizontal: 8,
-    borderRadius: THEME.borderRadius.sm,
+    borderRadius: theme.borderRadius.sm,
   },
   primary: {
-    backgroundColor: THEME.colors.primary + '20', // 20% opacity
+    backgroundColor: theme.colors.primary + '20', // 20% opacity
     borderWidth: 1,
-    borderColor: THEME.colors.primary + '40',
+    borderColor: theme.colors.primary + '40',
   },
   secondary: {
-    backgroundColor: THEME.colors.border,
+    backgroundColor: theme.colors.border,
   },
   text: {
     fontSize: 12,
     fontWeight: '600',
   },
   primaryText: {
-    color: THEME.colors.primary,
+    color: theme.colors.primary,
   },
   secondaryText: {
-    color: THEME.colors.textSecondary,
+    color: theme.colors.textSecondary,
   },
 });

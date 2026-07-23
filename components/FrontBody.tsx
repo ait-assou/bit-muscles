@@ -1,7 +1,7 @@
 import React from 'react';
 import Svg, { Path } from 'react-native-svg';
 import { useMuscleStore } from '../store/useMuscleStore';
-import { THEME } from '../constants/theme';
+import { useTheme } from '../constants/theme';
 import * as Haptics from 'expo-haptics';
 
 interface FrontBodyProps {
@@ -11,6 +11,7 @@ interface FrontBodyProps {
 
 export const FrontBody: React.FC<FrontBodyProps> = ({ width = '100%', height = '100%' }) => {
   const { selectedMuscles, toggleMuscle } = useMuscleStore();
+  const { colors, theme } = useTheme();
 
   const handlePress = (id: string) => {
     Haptics.selectionAsync();
@@ -18,7 +19,7 @@ export const FrontBody: React.FC<FrontBodyProps> = ({ width = '100%', height = '
   };
 
   const getFill = (id: string) => {
-    return selectedMuscles.includes(id) ? THEME.colors.primary : THEME.colors.muscleDefault;
+    return selectedMuscles.includes(id) ? colors.primary : colors.muscleDefault;
   };
 
   return (

@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { StyleSheet, View, Text, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { THEME } from '../../constants/theme';
+import { useTheme } from '../../constants/theme';
 import { Activity, Flame, Trophy, TrendingUp, ChevronRight } from 'lucide-react-native';
 import Svg, { Rect, G, Text as SvgText, Line } from 'react-native-svg';
 
@@ -25,6 +25,9 @@ const RECENT_ACHIEVEMENTS = [
 ];
 
 export default function ProgressScreen() {
+  const theme = useTheme();
+  const styles = useMemo(() => useStyles(theme), [theme]);
+
   
   const renderWeeklyConsistency = () => (
     <View style={styles.section}>
@@ -44,7 +47,7 @@ export default function ProgressScreen() {
                 isCompleted && styles.dayCircleCompleted,
                 isToday && !isCompleted && styles.dayCircleToday
               ]}>
-                {isCompleted && <Activity size={16} color={THEME.colors.background} />}
+                {isCompleted && <Activity size={16} color={theme.colors.background} />}
               </View>
               <Text style={[styles.dayText, isToday && styles.dayTextToday]}>{day}</Text>
             </View>
@@ -59,22 +62,22 @@ export default function ProgressScreen() {
       <Text style={styles.sectionTitle}>Overview</Text>
       <View style={styles.metricsGrid}>
         <View style={styles.metricCard}>
-          <Flame size={24} color={THEME.colors.primary} />
+          <Flame size={24} color={theme.colors.primary} />
           <Text style={styles.metricValue}>3 Weeks</Text>
           <Text style={styles.metricLabel}>Active Streak</Text>
         </View>
         <View style={styles.metricCard}>
-          <TrendingUp size={24} color={THEME.colors.primary} />
+          <TrendingUp size={24} color={theme.colors.primary} />
           <Text style={styles.metricValue}>12.4k lbs</Text>
           <Text style={styles.metricLabel}>Total Volume</Text>
         </View>
         <View style={styles.metricCard}>
-          <Trophy size={24} color={THEME.colors.primary} />
+          <Trophy size={24} color={theme.colors.primary} />
           <Text style={styles.metricValue}>14</Text>
           <Text style={styles.metricLabel}>Workouts</Text>
         </View>
         <View style={styles.metricCard}>
-          <Activity size={24} color={THEME.colors.primary} />
+          <Activity size={24} color={theme.colors.primary} />
           <Text style={styles.metricValue}>85%</Text>
           <Text style={styles.metricLabel}>Consistency</Text>
         </View>
@@ -102,7 +105,7 @@ export default function ProgressScreen() {
                   y1={chartHeight * ratio - (i === 1 ? 0 : 20)} 
                   x2={chartWidth} 
                   y2={chartHeight * ratio - (i === 1 ? 0 : 20)} 
-                  stroke={THEME.colors.border} 
+                  stroke={theme.colors.border} 
                   strokeWidth="1" 
                   strokeDasharray="4 4"
                 />
@@ -122,13 +125,13 @@ export default function ProgressScreen() {
                     y={y}
                     width={barWidth}
                     height={barHeight}
-                    fill={THEME.colors.primary}
+                    fill={theme.colors.primary}
                     rx={4}
                   />
                   <SvgText
                     x={x + barWidth / 2}
                     y={chartHeight - 10}
-                    fill={THEME.colors.textSecondary}
+                    fill={theme.colors.textSecondary}
                     fontSize="12"
                     textAnchor="middle"
                   >
@@ -154,7 +157,7 @@ export default function ProgressScreen() {
           return (
             <View key={item.id} style={[styles.achievementRow, !isLast && styles.achievementRowBorder]}>
               <View style={styles.achievementIconBg}>
-                <Icon size={20} color={THEME.colors.primary} />
+                <Icon size={20} color={theme.colors.primary} />
               </View>
               <View style={styles.achievementInfo}>
                 <Text style={styles.achievementTitle}>{item.title}</Text>
@@ -162,7 +165,7 @@ export default function ProgressScreen() {
               </View>
               <View style={styles.achievementMeta}>
                 <Text style={styles.achievementDate}>{item.date}</Text>
-                <ChevronRight size={16} color={THEME.colors.textSecondary} />
+                <ChevronRight size={16} color={theme.colors.textSecondary} />
               </View>
             </View>
           );
@@ -188,51 +191,51 @@ export default function ProgressScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = (theme: ReturnType<typeof useTheme>) => StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: THEME.colors.background,
+    backgroundColor: theme.colors.background,
   },
   container: {
     flex: 1,
   },
   content: {
-    padding: THEME.spacing.md,
-    paddingBottom: THEME.spacing.xl,
+    padding: theme.spacing.md,
+    paddingBottom: theme.spacing.xl,
   },
   header: {
-    marginBottom: THEME.spacing.xl,
-    marginTop: THEME.spacing.sm,
+    marginBottom: theme.spacing.xl,
+    marginTop: theme.spacing.sm,
   },
   title: {
     fontSize: 32,
     fontWeight: '800',
-    color: THEME.colors.text,
+    color: theme.colors.text,
   },
   section: {
-    marginBottom: THEME.spacing.xl,
+    marginBottom: theme.spacing.xl,
   },
   sectionHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'flex-end',
-    marginBottom: THEME.spacing.md,
+    marginBottom: theme.spacing.md,
   },
   sectionTitle: {
     fontSize: 20,
     fontWeight: '700',
-    color: THEME.colors.text,
+    color: theme.colors.text,
   },
   sectionAction: {
     fontSize: 14,
-    color: THEME.colors.primary,
+    color: theme.colors.primary,
     fontWeight: '600',
   },
   // Weekly Consistency
   consistencyCard: {
-    backgroundColor: THEME.colors.surface,
-    borderRadius: THEME.borderRadius.lg,
-    padding: THEME.spacing.md,
+    backgroundColor: theme.colors.surface,
+    borderRadius: theme.borderRadius.lg,
+    padding: theme.spacing.md,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -245,94 +248,94 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 18,
-    backgroundColor: THEME.colors.border,
+    backgroundColor: theme.colors.border,
     justifyContent: 'center',
     alignItems: 'center',
   },
   dayCircleCompleted: {
-    backgroundColor: THEME.colors.primary,
+    backgroundColor: theme.colors.primary,
   },
   dayCircleToday: {
     borderWidth: 2,
-    borderColor: THEME.colors.textSecondary,
-    backgroundColor: THEME.colors.surface,
+    borderColor: theme.colors.textSecondary,
+    backgroundColor: theme.colors.surface,
   },
   dayText: {
-    color: THEME.colors.textSecondary,
+    color: theme.colors.textSecondary,
     fontSize: 12,
     fontWeight: '600',
   },
   dayTextToday: {
-    color: THEME.colors.text,
+    color: theme.colors.text,
   },
   // Metrics Grid
   metricsGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: THEME.spacing.md,
+    gap: theme.spacing.md,
   },
   metricCard: {
     flex: 1,
     minWidth: '45%',
-    backgroundColor: THEME.colors.surface,
-    borderRadius: THEME.borderRadius.lg,
-    padding: THEME.spacing.md,
+    backgroundColor: theme.colors.surface,
+    borderRadius: theme.borderRadius.lg,
+    padding: theme.spacing.md,
   },
   metricValue: {
-    color: THEME.colors.text,
+    color: theme.colors.text,
     fontSize: 24,
     fontWeight: '800',
-    marginTop: THEME.spacing.sm,
+    marginTop: theme.spacing.sm,
     marginBottom: 4,
   },
   metricLabel: {
-    color: THEME.colors.textSecondary,
+    color: theme.colors.textSecondary,
     fontSize: 14,
   },
   // Chart
   chartCard: {
-    backgroundColor: THEME.colors.surface,
-    borderRadius: THEME.borderRadius.lg,
-    padding: THEME.spacing.lg,
-    paddingBottom: THEME.spacing.sm,
+    backgroundColor: theme.colors.surface,
+    borderRadius: theme.borderRadius.lg,
+    padding: theme.spacing.lg,
+    paddingBottom: theme.spacing.sm,
     alignItems: 'center',
     justifyContent: 'center',
   },
   // Achievements
   achievementsCard: {
-    backgroundColor: THEME.colors.surface,
-    borderRadius: THEME.borderRadius.lg,
+    backgroundColor: theme.colors.surface,
+    borderRadius: theme.borderRadius.lg,
   },
   achievementRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: THEME.spacing.md,
+    padding: theme.spacing.md,
   },
   achievementRowBorder: {
     borderBottomWidth: 1,
-    borderBottomColor: THEME.colors.border,
+    borderBottomColor: theme.colors.border,
   },
   achievementIconBg: {
     width: 48,
     height: 48,
     borderRadius: 24,
-    backgroundColor: THEME.colors.background,
+    backgroundColor: theme.colors.background,
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: THEME.spacing.md,
+    marginRight: theme.spacing.md,
   },
   achievementInfo: {
     flex: 1,
     justifyContent: 'center',
   },
   achievementTitle: {
-    color: THEME.colors.text,
+    color: theme.colors.text,
     fontSize: 16,
     fontWeight: '600',
     marginBottom: 4,
   },
   achievementDesc: {
-    color: THEME.colors.textSecondary,
+    color: theme.colors.textSecondary,
     fontSize: 14,
   },
   achievementMeta: {
@@ -341,7 +344,7 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   achievementDate: {
-    color: THEME.colors.textSecondary,
+    color: theme.colors.textSecondary,
     fontSize: 12,
   },
 });

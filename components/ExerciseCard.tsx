@@ -1,8 +1,8 @@
-import React, { useRef } from 'react';
+import React, { useRef, useMemo } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Animated, Pressable } from 'react-native';
 import { Image } from 'expo-image';
 import { Exercise } from '../types';
-import { THEME } from '../constants/theme';
+import { useTheme } from '../constants/theme';
 import { DifficultyBadge } from './DifficultyBadge';
 import { MuscleChip } from './MuscleChip';
 import { ChevronRight } from 'lucide-react-native';
@@ -14,6 +14,8 @@ interface ExerciseCardProps {
 
 export const ExerciseCard: React.FC<ExerciseCardProps> = ({ exercise, onPress }) => {
   const scaleAnim = useRef(new Animated.Value(1)).current;
+  const theme = useTheme();
+  const styles = useMemo(() => useStyles(theme), [theme]);
 
   const handlePressIn = () => {
     Animated.spring(scaleAnim, {
@@ -57,7 +59,7 @@ export const ExerciseCard: React.FC<ExerciseCardProps> = ({ exercise, onPress })
               </Text>
             </View>
             <View style={styles.arrowContainer}>
-              <ChevronRight color={THEME.colors.primary} size={24} />
+              <ChevronRight color={theme.colors.primary} size={24} />
             </View>
           </View>
 
@@ -96,48 +98,48 @@ export const ExerciseCard: React.FC<ExerciseCardProps> = ({ exercise, onPress })
 // React.memo to prevent unnecessary re-renders in FlatList
 export const MemoizedExerciseCard = React.memo(ExerciseCard);
 
-const styles = StyleSheet.create({
+const useStyles = (theme: ReturnType<typeof useTheme>) => StyleSheet.create({
   card: {
-    backgroundColor: THEME.colors.card,
-    borderRadius: THEME.borderRadius.lg,
-    marginBottom: THEME.spacing.md,
+    backgroundColor: theme.colors.card,
+    borderRadius: theme.borderRadius.lg,
+    marginBottom: theme.spacing.md,
     borderWidth: 1,
-    borderColor: THEME.colors.border,
+    borderColor: theme.colors.border,
     overflow: 'hidden',
   },
   image: {
     width: '100%',
     height: 150,
-    backgroundColor: THEME.colors.background,
+    backgroundColor: theme.colors.background,
   },
   cardContent: {
-    padding: THEME.spacing.md,
+    padding: theme.spacing.md,
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'flex-start',
-    marginBottom: THEME.spacing.sm,
+    marginBottom: theme.spacing.sm,
   },
   titleContainer: {
     flex: 1,
-    paddingRight: THEME.spacing.sm,
+    paddingRight: theme.spacing.sm,
   },
   title: {
-    color: THEME.colors.text,
+    color: theme.colors.text,
     fontSize: 18,
     fontWeight: '700',
     marginBottom: 4,
   },
   category: {
-    color: THEME.colors.primary,
+    color: theme.colors.primary,
     fontSize: 12,
     fontWeight: '600',
     marginBottom: 2,
     textTransform: 'uppercase',
   },
   equipment: {
-    color: THEME.colors.textSecondary,
+    color: theme.colors.textSecondary,
     fontSize: 14,
   },
   arrowContainer: {
@@ -154,7 +156,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   sectionTitle: {
-    color: THEME.colors.textSecondary,
+    color: theme.colors.textSecondary,
     fontSize: 12,
     marginBottom: 4,
     marginTop: 8,
@@ -162,9 +164,9 @@ const styles = StyleSheet.create({
   chipRow: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: THEME.spacing.xs,
+    gap: theme.spacing.xs,
   },
   badgeContainer: {
-    marginLeft: THEME.spacing.md,
+    marginLeft: theme.spacing.md,
   },
 });

@@ -1,9 +1,9 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useMemo,  useEffect, useState, useCallback } from 'react';
 import { StyleSheet, View, FlatList, Text, ActivityIndicator, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { RefreshCw } from 'lucide-react-native';
-import { THEME } from '../../constants/theme';
+import { useTheme } from '../../constants/theme';
 import { MuscleBody } from '../../components/MuscleBody';
 import { useMuscleStore } from '../../store/useMuscleStore';
 import { MemoizedExerciseCard } from '../../components/ExerciseCard';
@@ -11,6 +11,9 @@ import { wgerApi } from '../../services/wgerApi';
 import { Exercise } from '../../types';
 
 export default function HomeScreen() {
+  const theme = useTheme();
+  const styles = useMemo(() => useStyles(theme), [theme]);
+
   const { selectedMuscles } = useMuscleStore();
   const router = useRouter();
 
@@ -76,7 +79,7 @@ export default function HomeScreen() {
     if (loading) {
       return (
         <View style={styles.emptyContainer}>
-          <ActivityIndicator size="large" color={THEME.colors.primary} />
+          <ActivityIndicator size="large" color={theme.colors.primary} />
           <Text style={styles.loadingText}>Fetching exercises...</Text>
         </View>
       );
@@ -87,7 +90,7 @@ export default function HomeScreen() {
         <View style={styles.emptyContainer}>
           <Text style={styles.errorText}>{error}</Text>
           <TouchableOpacity style={styles.retryButton} onPress={fetchExercises}>
-            <RefreshCw color={THEME.colors.background} size={16} style={{ marginRight: 8 }} />
+            <RefreshCw color={theme.colors.background} size={16} style={{ marginRight: 8 }} />
             <Text style={styles.retryText}>Retry</Text>
           </TouchableOpacity>
         </View>
@@ -122,82 +125,82 @@ export default function HomeScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = (theme: ReturnType<typeof useTheme>) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: THEME.colors.background,
+    backgroundColor: theme.colors.background,
   },
   listContent: {
-    paddingHorizontal: THEME.spacing.md,
-    paddingTop: THEME.spacing.xs,
-    paddingBottom: THEME.spacing.xl,
+    paddingHorizontal: theme.spacing.md,
+    paddingTop: theme.spacing.xs,
+    paddingBottom: theme.spacing.xl,
   },
   header: {
-    marginBottom: THEME.spacing.sm,
+    marginBottom: theme.spacing.sm,
   },
   title: {
     fontSize: 22,
     fontWeight: '800',
-    color: THEME.colors.primary,
+    color: theme.colors.primary,
     marginBottom: 2,
   },
   subtitle: {
     fontSize: 14,
-    color: THEME.colors.textSecondary,
+    color: theme.colors.textSecondary,
     fontWeight: '500',
   },
   sectionHeader: {
-    marginTop: THEME.spacing.sm,
-    marginBottom: THEME.spacing.sm,
+    marginTop: theme.spacing.sm,
+    marginBottom: theme.spacing.sm,
   },
   sectionTitle: {
     fontSize: 22,
     fontWeight: '700',
-    color: THEME.colors.text,
+    color: theme.colors.text,
   },
   sectionSubtitle: {
     fontSize: 14,
-    color: THEME.colors.textSecondary,
+    color: theme.colors.textSecondary,
     marginTop: 4,
   },
   emptyContainer: {
-    padding: THEME.spacing.xl,
+    padding: theme.spacing.xl,
     alignItems: 'center',
     justifyContent: 'center',
   },
   loadingText: {
-    marginTop: THEME.spacing.md,
-    color: THEME.colors.textSecondary,
+    marginTop: theme.spacing.md,
+    color: theme.colors.textSecondary,
     fontSize: 16,
   },
   emptyText: {
-    color: THEME.colors.text,
+    color: theme.colors.text,
     fontSize: 18,
     fontWeight: '600',
     marginBottom: 4,
     textAlign: 'center',
   },
   emptySubText: {
-    color: THEME.colors.textSecondary,
+    color: theme.colors.textSecondary,
     fontSize: 14,
     textAlign: 'center',
   },
   errorText: {
-    color: THEME.colors.error,
+    color: theme.colors.error,
     fontSize: 16,
     textAlign: 'center',
-    marginBottom: THEME.spacing.md,
+    marginBottom: theme.spacing.md,
   },
   retryButton: {
     flexDirection: 'row',
-    backgroundColor: THEME.colors.primary,
-    paddingHorizontal: THEME.spacing.lg,
-    paddingVertical: THEME.spacing.sm,
-    borderRadius: THEME.borderRadius.round,
+    backgroundColor: theme.colors.primary,
+    paddingHorizontal: theme.spacing.lg,
+    paddingVertical: theme.spacing.sm,
+    borderRadius: theme.borderRadius.round,
     alignItems: 'center',
   },
   retryText: {
-    color: THEME.colors.background,
+    color: theme.colors.background,
     fontSize: 16,
     fontWeight: '700',
   },

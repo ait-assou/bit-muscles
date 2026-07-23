@@ -1,13 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React, { useMemo,  useState, useEffect } from 'react';
 import { StyleSheet, View, FlatList, TextInput, ActivityIndicator, Text } from 'react-native';
 import { useRouter } from 'expo-router';
-import { THEME } from '../../constants/theme';
+import { useTheme } from '../../constants/theme';
 import { MemoizedExerciseCard } from '../../components/ExerciseCard';
 import { Search } from 'lucide-react-native';
 import { wgerApi } from '../../services/wgerApi';
 import { Exercise } from '../../types';
 
 export default function ExercisesScreen() {
+  const theme = useTheme();
+  const styles = useMemo(() => useStyles(theme), [theme]);
+
   const [searchQuery, setSearchQuery] = useState('');
   const [exercises, setExercises] = useState<Exercise[]>([]);
   const [loading, setLoading] = useState(true);
@@ -41,18 +44,18 @@ export default function ExercisesScreen() {
   return (
     <View style={styles.container}>
       <View style={styles.searchContainer}>
-        <Search color={THEME.colors.textSecondary} size={20} style={styles.searchIcon} />
+        <Search color={theme.colors.textSecondary} size={20} style={styles.searchIcon} />
         <TextInput
           style={styles.searchInput}
           placeholder="Search exercises..."
-          placeholderTextColor={THEME.colors.textSecondary}
+          placeholderTextColor={theme.colors.textSecondary}
           value={searchQuery}
           onChangeText={setSearchQuery}
         />
       </View>
       
       {loading ? (
-        <ActivityIndicator size="large" color={THEME.colors.primary} style={styles.loader} />
+        <ActivityIndicator size="large" color={theme.colors.primary} style={styles.loader} />
       ) : (
         <FlatList
           data={exercises}
@@ -74,41 +77,41 @@ export default function ExercisesScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = (theme: ReturnType<typeof useTheme>) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: THEME.colors.background,
+    backgroundColor: theme.colors.background,
   },
   searchContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: THEME.colors.card,
-    margin: THEME.spacing.md,
-    paddingHorizontal: THEME.spacing.md,
-    borderRadius: THEME.borderRadius.lg,
+    backgroundColor: theme.colors.card,
+    margin: theme.spacing.md,
+    paddingHorizontal: theme.spacing.md,
+    borderRadius: theme.borderRadius.lg,
     borderWidth: 1,
-    borderColor: THEME.colors.border,
+    borderColor: theme.colors.border,
   },
   searchIcon: {
-    marginRight: THEME.spacing.sm,
+    marginRight: theme.spacing.sm,
   },
   searchInput: {
     flex: 1,
-    color: THEME.colors.text,
-    paddingVertical: THEME.spacing.md,
+    color: theme.colors.text,
+    paddingVertical: theme.spacing.md,
     fontSize: 16,
   },
   listContent: {
-    paddingHorizontal: THEME.spacing.md,
-    paddingBottom: THEME.spacing.xl,
+    paddingHorizontal: theme.spacing.md,
+    paddingBottom: theme.spacing.xl,
   },
   loader: {
-    marginTop: THEME.spacing.xl,
+    marginTop: theme.spacing.xl,
   },
   emptyText: {
-    color: THEME.colors.textSecondary,
+    color: theme.colors.textSecondary,
     textAlign: 'center',
-    marginTop: THEME.spacing.xl,
+    marginTop: theme.spacing.xl,
     fontSize: 16,
   },
 });

@@ -2,12 +2,15 @@ import { View, StyleSheet, TouchableOpacity, Text, useWindowDimensions } from 'r
 import { useMuscleStore } from '../store/useMuscleStore';
 import { FrontBody } from './FrontBody';
 import { BackBody } from './BackBody';
-import { THEME } from '../constants/theme';
+import { useTheme } from '../constants/theme';
 import * as Haptics from 'expo-haptics';
+import { useMemo } from 'react';
 
 export const MuscleBody = () => {
   const { bodyView, setBodyView } = useMuscleStore();
   const { height: screenHeight } = useWindowDimensions();
+  const theme = useTheme();
+  const styles = useMemo(() => useStyles(theme), [theme]);
 
   const handleToggle = (view: 'front' | 'back') => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -41,34 +44,34 @@ export const MuscleBody = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const useStyles = (theme: ReturnType<typeof useTheme>) => StyleSheet.create({
   container: {
     alignItems: 'center',
     justifyContent: 'center',
-    paddingTop: THEME.spacing.xs,
+    paddingTop: theme.spacing.xs,
   },
   toggleContainer: {
     flexDirection: 'row',
-    backgroundColor: THEME.colors.card,
-    borderRadius: THEME.borderRadius.round,
+    backgroundColor: theme.colors.card,
+    borderRadius: theme.borderRadius.round,
     padding: 2,
-    marginBottom: THEME.spacing.sm,
+    marginBottom: theme.spacing.sm,
   },
   toggleButton: {
     paddingVertical: 6,
-    paddingHorizontal: THEME.spacing.lg,
-    borderRadius: THEME.borderRadius.round,
+    paddingHorizontal: theme.spacing.lg,
+    borderRadius: theme.borderRadius.round,
   },
   activeToggle: {
-    backgroundColor: THEME.colors.primary,
+    backgroundColor: theme.colors.primary,
   },
   toggleText: {
-    color: THEME.colors.textSecondary,
+    color: theme.colors.textSecondary,
     fontWeight: '600',
     fontSize: 14,
   },
   activeToggleText: {
-    color: THEME.colors.background,
+    color: theme.colors.background,
   },
   bodyContainer: {
     width: '100%',
