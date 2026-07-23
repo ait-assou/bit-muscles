@@ -44,11 +44,36 @@ const MENU_SECTIONS = [
 ];
 
 import { useThemeStore } from '../../store/useThemeStore';
+import { useAuthStore } from '../../store/useAuthStore';
+import { useRouter } from 'expo-router';
 
 export default function ProfileScreen() {
   const theme = useTheme();
   const styles = useMemo(() => useStyles(theme), [theme]);
   const { theme: themeState, toggleTheme } = useThemeStore();
+  const { isAuthenticated, guestSessionStart, logout } = useAuthStore();
+  const router = useRouter();
+
+  const [timeLeftStr, setTimeLeftStr] = React.useState('');
+
+  React.useEffect(() => {
+    if (isAuthenticated || !guestSessionStart) return;
+
+    const updateTimer = () => {
+      const elapsed = Date.now() - guestSessionStart;
+      const total = 24 * 60 * 60 * 1000;
+      const remaining = Math.max(0, total - elapsed);
+      
+      const hours = Math.floor(remaining / (1000 * 60 * 60));
+      const minutes = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
+      
+      setTimeLeftStr(`${hours}h ${minutes}m`);
+    };
+
+    updateTimer();
+    const int = setInterval(updateTimer, 60000);
+    return () => clearInterval(int);
+  }, [isAuthenticated, guestSessionStart]);
 
   
   const renderHeader = () => (
@@ -64,6 +89,20 @@ export default function ProfileScreen() {
           <Text style={styles.badgeText}>PRO MEMBER</Text>
         </View>
       </View>
+    </View>
+  );
+
+  const renderGuestHeader = () => (
+    <View style={[styles.header, { flexDirection: 'column', alignItems: 'flex-start', backgroundColor: theme.colors.surface, padding: theme.spacing.lg, borderRadius: theme.borderRadius.lg, borderWidth: 1, borderColor: theme.colors.border }]}>
+      <Text style={styles.userName}>Guest Pass</Text>
+      <Text style={styles.userHandle}>{timeLeftStr} remaining on your 24h trial</Text>
+      <TouchableOpacity 
+        style={[styles.badgeContainer, { marginTop: 8, paddingVertical: 8, paddingHorizontal: 12, backgroundColor: theme.colors.text }]}
+        onPress={() => logout()}
+      >
+        <Crown size={14} color={theme.colors.background} />
+        <Text style={[styles.badgeText, { color: theme.colors.background }]}>CREATE ACCOUNT TO SAVE PROGRESS</Text>
+      </TouchableOpacity>
     </View>
   );
 
@@ -144,14 +183,14 @@ export default function ProfileScreen() {
       <ScrollView style={styles.container} contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
         <Text style={styles.screenTitle}>Profile</Text>
         
-        {renderHeader()}
+        {isAuthenticated ? renderHeader() : renderGuestHeader()}
         {renderStats()}
         
         {MENU_SECTIONS.map(renderMenuSection)}
         
-        <TouchableOpacity style={styles.logoutButton}>
+        <TouchableOpacity style={styles.logoutButton} onPress={() => logout()}>
           <LogOut size={20} color={theme.colors.error} />
-          <Text style={styles.logoutText}>Log Out</Text>
+          <Text style={styles.logoutText}>{isAuthenticated ? 'Log Out' : 'End Guest Session'}</Text>
         </TouchableOpacity>
         
         <Text style={styles.versionText}>Bit-Muscles v1.0.0</Text>
