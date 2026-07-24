@@ -1,5 +1,5 @@
-import React, { useRef, useMemo } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Animated, Pressable } from 'react-native';
+import React, { useRef, useMemo, useState } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Animated, Pressable, ActivityIndicator } from 'react-native';
 import { Image } from 'expo-image';
 import { Exercise } from '../types';
 import { useTheme } from '../constants/theme';
@@ -16,6 +16,7 @@ export const ExerciseCard: React.FC<ExerciseCardProps> = ({ exercise, onPress })
   const scaleAnim = useRef(new Animated.Value(1)).current;
   const theme = useTheme();
   const styles = useMemo(() => useStyles(theme), [theme]);
+  const [isImageLoading, setIsImageLoading] = useState(true);
 
   const handlePressIn = () => {
     Animated.spring(scaleAnim, {
@@ -42,12 +43,21 @@ export const ExerciseCard: React.FC<ExerciseCardProps> = ({ exercise, onPress })
     >
       <Animated.View style={[styles.card, { transform: [{ scale: scaleAnim }] }]}>
         {exercise.image && (
-          <Image
-            source={{ uri: exercise.image }}
-            style={styles.image}
-            contentFit="cover"
-            transition={300}
-          />
+          <View>
+            {isImageLoading && (
+              <View style={[styles.image, { position: 'absolute', justifyContent: 'center', alignItems: 'center', zIndex: 1 }]}>
+                <ActivityIndicator color={theme.colors.primary} />
+              </View>
+            )}
+            <Image
+              source={{ uri: exercise.image }}
+              style={styles.image}
+              contentFit="cover"
+              transition={300}
+              onLoadStart={() => setIsImageLoading(true)}
+              onLoadEnd={() => setIsImageLoading(false)}
+            />
+          </View>
         )}
         <View style={styles.cardContent}>
           <View style={styles.header}>

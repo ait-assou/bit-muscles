@@ -193,7 +193,7 @@ export default function ProfileScreen() {
           <Text style={styles.logoutText}>{isAuthenticated ? 'Log Out' : 'End Guest Session'}</Text>
         </TouchableOpacity>
         
-        <Text style={styles.versionText}>Bit-Muscles v1.0.0</Text>
+        <Text style={styles.versionText}>Bit Muscles v1.0.0</Text>
       </ScrollView>
     </SafeAreaView>
   );

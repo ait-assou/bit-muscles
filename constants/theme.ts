@@ -1,17 +1,17 @@
-import { useThemeStore } from '../store/useThemeStore';
 import { useMemo } from 'react';
+import { useThemeStore } from '../store/useThemeStore';
 
 const darkColors = {
-  background: '#000000',
-  card: '#1C1C1E',
+  background: '#111827',
+  card: '#1F2937',
   primary: '#4ADE80',
   text: '#FFFFFF',
-  textSecondary: '#D1D1D6', // Much lighter gray for excellent contrast in dark mode
-  border: '#2C2C2E',
-  muscleDefault: '#333333',
-  surface: '#121212',
-  error: '#FF453A',
-  gradient: ['#1C1C1E', '#000000'] as readonly [string, string, ...string[]],
+  textSecondary: '#9CA3AF',
+  border: '#374151',
+  muscleDefault: '#374151',
+  surface: '#030712',
+  error: '#EF4444',
+  gradient: ['#1F2937', '#111827'] as readonly [string, string, ...string[]],
 };
 
 const lightColors = {
@@ -24,7 +24,7 @@ const lightColors = {
   muscleDefault: '#D1D1D6',
   surface: '#FFFFFF',
   error: '#FF3B30',
-  gradient: ['#E8F5E9', '#F2F2F7'] as readonly [string, string, ...string[]],
+  gradient: ['#FFFFFF', '#F2F2F7'] as readonly [string, string, ...string[]],
 };
 
 export const THEME = {
@@ -47,7 +47,7 @@ export const THEME = {
 
 export const useTheme = () => {
   const { theme } = useThemeStore();
-  
+
   const colors = useMemo(() => {
     return theme === 'dark' ? darkColors : lightColors;
   }, [theme]);

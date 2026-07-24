@@ -339,7 +339,7 @@ const useStyles = (theme: ReturnType<typeof useTheme>) => StyleSheet.create({
   // Modal Styles
   modalContainer: {
     flex: 1,
-    backgroundColor: 'transparent',
+    backgroundColor: theme.colors.background,
   },
   modalHeader: {
     flexDirection: 'row',

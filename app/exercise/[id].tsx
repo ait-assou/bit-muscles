@@ -20,6 +20,7 @@ export default function ExerciseDetailsScreen() {
   const [exercise, setExercise] = useState<Exercise | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isImageLoading, setIsImageLoading] = useState(true);
 
   const fetchExercise = async () => {
     try {
@@ -79,12 +80,21 @@ export default function ExerciseDetailsScreen() {
       />
       <ScrollView contentContainerStyle={styles.scrollContent}>
         {exercise.image ? (
-          <Image
-            source={{ uri: exercise.image }}
-            style={styles.heroImage}
-            contentFit="cover"
-            transition={300}
-          />
+          <View>
+            {isImageLoading && (
+              <View style={[styles.heroImage, { position: 'absolute', justifyContent: 'center', alignItems: 'center', zIndex: 1 }]}>
+                <ActivityIndicator color={theme.colors.primary} />
+              </View>
+            )}
+            <Image
+              source={{ uri: exercise.image }}
+              style={styles.heroImage}
+              contentFit="cover"
+              transition={300}
+              onLoadStart={() => setIsImageLoading(true)}
+              onLoadEnd={() => setIsImageLoading(false)}
+            />
+          </View>
         ) : (
           <View style={styles.imagePlaceholder}>
             <Text style={styles.placeholderText}>No Image Available</Text>

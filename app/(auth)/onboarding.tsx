@@ -12,7 +12,7 @@ const { width, height } = Dimensions.get('window');
 const SLIDES = [
   {
     id: '1',
-    title: 'Welcome to Bit-Muscles',
+    title: 'Welcome to Bit Muscles',
     description: 'Your ultimate fitness companion. Track, analyze, and optimize your workouts all in one place.',
     icon: (color: string) => <Dumbbell size={80} color={color} />
   },

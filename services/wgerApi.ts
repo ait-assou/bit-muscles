@@ -1,8 +1,12 @@
 import { Exercise, WgerResponse } from '../types';
 import { muscleMap } from '../constants/muscleMap';
 
+import * as FileSystem from 'expo-file-system/legacy';
+
 const BASE_URL = 'https://wger.de/api/v2';
 const CACHE = new Map<string, any>();
+const CACHE_DIR = `${FileSystem.cacheDirectory}wger_data/`;
+const CACHE_TTL_MS = 24 * 60 * 60 * 1000; // 24 hours
 
 // Interfaces specific to the /exerciseinfo/ endpoint
 interface WgerExerciseInfo {
@@ -15,24 +19,84 @@ interface WgerExerciseInfo {
   translations: { id: number; language: number; name: string; description: string }[];
 }
 
-// Helper to handle API fetch with cache
+let isCacheDirChecked = false;
+async function ensureCacheDir() {
+  if (isCacheDirChecked) return;
+  const info = await FileSystem.getInfoAsync(CACHE_DIR);
+  if (!info.exists) {
+    await FileSystem.makeDirectoryAsync(CACHE_DIR, { intermediates: true });
+  }
+  isCacheDirChecked = true;
+}
+
+function getCacheKey(url: string) {
+  return url.replace(/[^a-zA-Z0-9]/g, '_') + '.json';
+}
+
+interface CachePayload<T> {
+  timestamp: number;
+  data: T;
+}
+
+// Helper to handle API fetch with hybrid cache (Memory -> Disk -> Network)
 async function fetchWger<T>(endpoint: string, params: Record<string, string> = {}): Promise<T> {
   const urlParams = new URLSearchParams({ ...params, language: '2' }); // 2 = English
   const url = `${BASE_URL}${endpoint}?${urlParams.toString()}`;
 
+  // 1. Memory Cache
   if (CACHE.has(url)) {
     return CACHE.get(url) as T;
   }
 
+  // 2. Disk Cache
+  await ensureCacheDir();
+  const cacheFile = CACHE_DIR + getCacheKey(url);
+  try {
+    const info = await FileSystem.getInfoAsync(cacheFile);
+    if (info.exists) {
+      const diskData = await FileSystem.readAsStringAsync(cacheFile);
+      const payload = JSON.parse(diskData) as CachePayload<T>;
+      
+      const isExpired = (Date.now() - payload.timestamp) > CACHE_TTL_MS;
+      if (!isExpired) {
+        CACHE.set(url, payload.data);
+        return payload.data;
+      }
+    }
+  } catch (e) {
+    console.warn('Disk cache read failed for', url);
+  }
+
+  // 3. Network Fetch
   try {
     const response = await fetch(url);
     if (!response.ok) {
       throw new Error(`Wger API error: ${response.status}`);
     }
     const data = await response.json();
+    
+    // Save to memory
     CACHE.set(url, data);
+    
+    // Save to disk asynchronously
+    const payload: CachePayload<T> = { timestamp: Date.now(), data };
+    FileSystem.writeAsStringAsync(cacheFile, JSON.stringify(payload)).catch(e => 
+      console.warn('Disk cache write failed', e)
+    );
+    
     return data;
   } catch (error) {
+    // Fallback to expired disk cache if offline
+    try {
+      const info = await FileSystem.getInfoAsync(cacheFile);
+      if (info.exists) {
+        const diskData = await FileSystem.readAsStringAsync(cacheFile);
+        const payload = JSON.parse(diskData) as CachePayload<T>;
+        CACHE.set(url, payload.data);
+        return payload.data;
+      }
+    } catch (fallbackError) {}
+    
     console.error(`Failed to fetch ${url}`, error);
     throw error;
   }
@@ -73,7 +137,7 @@ function formatWgerExerciseInfo(raw: WgerExerciseInfo): Exercise {
 export const wgerApi = {
   getExercises: async (): Promise<Exercise[]> => {
     // /exerciseinfo/ provides all nested data directly
-    const data = await fetchWger<WgerResponse<WgerExerciseInfo>>('/exerciseinfo/', { limit: '60' });
+    const data = await fetchWger<WgerResponse<WgerExerciseInfo>>('/exerciseinfo/', { limit: '150' });
     const formatted = data.results.map(formatWgerExerciseInfo);
     return formatted.filter(ex => ex.image !== null);
   },
@@ -98,12 +162,17 @@ export const wgerApi = {
   searchExercises: async (query: string): Promise<Exercise[]> => {
     if (!query) return [];
     
-    // /exerciseinfo/ does not have a direct search query natively, but we can query by name
-    const data = await fetchWger<WgerResponse<WgerExerciseInfo>>('/exerciseinfo/', {
-      name: query,
-      limit: '60',
-    });
-    const formatted = data.results.map(formatWgerExerciseInfo);
-    return formatted.filter(ex => ex.image !== null);
+    // The Wger /exerciseinfo/ endpoint doesn't support searching by name directly.
+    // We fetch the main list (which is instantly served from our hybrid cache) 
+    // and perform a rich local search across names, categories, and muscles.
+    const allExercises = await wgerApi.getExercises();
+    const lowerQuery = query.toLowerCase();
+    
+    return allExercises.filter(ex => 
+      ex.name.toLowerCase().includes(lowerQuery) || 
+      ex.category.toLowerCase().includes(lowerQuery) ||
+      ex.primaryMuscles.some(m => m.toLowerCase().includes(lowerQuery)) ||
+      ex.equipment.some(e => e.toLowerCase().includes(lowerQuery))
+    );
   },
 };
